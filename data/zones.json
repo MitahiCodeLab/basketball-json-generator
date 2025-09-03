@@ -1,0 +1,162 @@
+[
+  {
+    "ID": "1",
+    "zone": "freethrows"
+  },
+  {
+    "ID": "2",
+    "zone": "three-points-arc"
+  },
+  {
+    "ID": "3",
+    "zone": "mid-range-close-left-top"
+  },
+  {
+    "ID": "4",
+    "zone": "mid-range-close-left-middle"
+  },
+  {
+    "ID": "5",
+    "zone": "mid-range-close-left-bottom"
+  },
+  {
+    "ID": "6",
+    "zone": "mid-range-wide-left-bottom-arc"
+  },
+  {
+    "ID": "7",
+    "zone": "mid-range-wide-left-top"
+  },
+  {
+    "ID": "8",
+    "zone": "mid-range-wide-left-middle"
+  },
+  {
+    "ID": "9",
+    "zone": "mid-range-close-right-top"
+  },
+  {
+    "ID": "10",
+    "zone": "mid-range-close-right-middle"
+  },
+  {
+    "ID": "11",
+    "zone": "mid-range-close-right-bottom"
+  },
+  {
+    "ID": "12",
+    "zone": "mid-range-wide-right-bottom-arc"
+  },
+  {
+    "ID": "13",
+    "zone": "mid-range-wide-right-top"
+  },
+  {
+    "ID": "14",
+    "zone": "mid-range-wide-right-middle"
+  },
+  {
+    "ID": "15",
+    "zone": "threepoints-range-north-west"
+  },
+  {
+    "ID": "16",
+    "zone": "threepoints-range-north-east"
+  },
+  {
+    "ID": "17",
+    "zone": "threepoints-range-south-west"
+  },
+  {
+    "ID": "18",
+    "zone": "threepoints-range-south-east"
+  },
+  {
+    "ID": "19",
+    "zone": "threepoints-range-middle-north"
+  },
+  {
+    "ID": "20",
+    "zone": "threepoints-range-middle-south"
+  },
+  {
+    "ID": "21",
+    "zone": "threepoints-range-middle"
+  },
+  {
+    "ID": "22",
+    "zone": "mid-range-close-left-top-e"
+  },
+  {
+    "ID": "23",
+    "zone": "mid-range-close-left-middle-e"
+  },
+  {
+    "ID": "24",
+    "zone": "mid-range-close-left-bottom-e"
+  },
+  {
+    "ID": "25",
+    "zone": "mid-range-wide-left-bottom-arc-e"
+  },
+  {
+    "ID": "26",
+    "zone": "mid-range-wide-left-top-e"
+  },
+  {
+    "ID": "27",
+    "zone": "mid-range-wide-left-middle-e"
+  },
+  {
+    "ID": "28",
+    "zone": "mid-range-close-right-top-e"
+  },
+  {
+    "ID": "29",
+    "zone": "mid-range-close-right-middle-e"
+  },
+  {
+    "ID": "30",
+    "zone": "mid-range-close-right-bottom-e"
+  },
+  {
+    "ID": "31",
+    "zone": "mid-range-wide-right-bottom-arc-e"
+  },
+  {
+    "ID": "32",
+    "zone": "mid-range-wide-right-top-e"
+  },
+  {
+    "ID": "33",
+    "zone": "mid-range-wide-right-middle-e"
+  },
+  {
+    "ID": "34",
+    "zone": "threepoints-range-north-west-e"
+  },
+  {
+    "ID": "35",
+    "zone": "threepoints-range-north-east-e"
+  },
+  {
+    "ID": "36",
+    "zone": "threepoints-range-south-west-e"
+  },
+  {
+    "ID": "37",
+    "zone": "threepoints-range-south-east-e"
+  },
+  {
+    "ID": "38",
+    "zone": "threepoints-range-middle-north-e"
+  },
+  {
+    "ID": "39",
+    "zone": "threepoints-range-middle-south-e"
+  },
+  {
+    "ID": "40",
+    "zone": "threepoints-range-middle-e"
+  }
+]

@@ -1,0 +1,42 @@
+[
+  {
+    "ID": "1",
+    "division": "nationale 1"
+  },
+  {
+    "ID": "2",
+    "division": "nationale 2"
+  },
+  {
+    "ID": "3",
+    "division": "nationale 3"
+  },
+  {
+    "ID": "4",
+    "division": "region 1"
+  },
+  {
+    "ID": "5",
+    "division": "region 2"
+  },
+  {
+    "ID": "6",
+    "division": "region 3"
+  },
+  {
+    "ID": "7",
+    "division": "departementale 1"
+  },
+  {
+    "ID": "8",
+    "division": "departementale 2"
+  },
+  {
+    "ID": "9",
+    "division": "departementale 3"
+  },
+  {
+    "ID": "10",
+    "division": "departementale 4"
+  }
+]

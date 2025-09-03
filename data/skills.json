@@ -1,0 +1,54 @@
+[
+  {
+    "ID": "1",
+    "skill": "shootmidrange"
+  },
+  {
+    "ID": "2",
+    "skill": "shootwiderange"
+  },
+  {
+    "ID": "3",
+    "skill": "freethrow"
+  },
+  {
+    "ID": "4",
+    "skill": "layup"
+  },
+  {
+    "ID": "5",
+    "skill": "dunk"
+  },
+  {
+    "ID": "6",
+    "skill": "teardrop"
+  },
+  {
+    "ID": "7",
+    "skill": "tipin"
+  },
+  {
+    "ID": "8",
+    "skill": "offrebound"
+  },
+  {
+    "ID": "9",
+    "skill": "defrebound"
+  },
+  {
+    "ID": "10",
+    "skill": "block"
+  },
+  {
+    "ID": "11",
+    "skill": "steal"
+  },
+  {
+    "ID": "12",
+    "skill": "assist"
+  },
+  {
+    "ID": "13",
+    "skill": "duelwon"
+  }
+]

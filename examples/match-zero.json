@@ -1,0 +1,31 @@
+[
+  {
+    "team": "Charonne",
+    "squad": 2,
+    "division": "region 1",
+    "section": "SéniorsF",
+    "game": { "host": "Charonne", "opponent": "EPPG" },
+    "date": "2025-09-03"
+  },
+  [
+    {
+      "id": 21,
+      "firstname": "Maël",
+      "lastname": "Martin",
+      "number": 1,
+      "shootmidrange": { "count": 0 },
+      "shootwiderange": { "count": 0 },
+      "freethrow": { "count": 0 },
+      "layup": { "count": 0 },
+      "dunk": { "count": 0 },
+      "teardrop": { "count": 0 },
+      "tipin": { "count": 0 },
+      "offrebound": { "count": 0 },
+      "defrebound": { "count": 0 },
+      "block": { "count": 0 },
+      "steal": { "count": 0 },
+      "assist": { "count": 0 },
+      "duelwon": { "count": 0 }
+    }
+  ]
+]

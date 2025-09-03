@@ -1,0 +1,72 @@
+[
+  {
+    "ID": "41",
+    "NOM": "Nicolas",
+    "PRENOM": "Bernard",
+    "NUMERO": "1",
+    "POSITION": "guard"
+  },
+  {
+    "ID": "42",
+    "NOM": "Adrien",
+    "PRENOM": "Garnier",
+    "NUMERO": "2",
+    "POSITION": "shooting guard"
+  },
+  {
+    "ID": "43",
+    "NOM": "Théo",
+    "PRENOM": "Faure",
+    "NUMERO": "3",
+    "POSITION": "shooting guard"
+  },
+  {
+    "ID": "44",
+    "NOM": "Victor",
+    "PRENOM": "Andre",
+    "NUMERO": "4",
+    "POSITION": "shooting guard"
+  },
+  {
+    "ID": "45",
+    "NOM": "Simon",
+    "PRENOM": "Andre",
+    "NUMERO": "5",
+    "POSITION": "center"
+  },
+  {
+    "ID": "46",
+    "NOM": "Tom",
+    "PRENOM": "Lambert",
+    "NUMERO": "6",
+    "POSITION": "power forward"
+  },
+  {
+    "ID": "47",
+    "NOM": "Jules",
+    "PRENOM": "Leroy",
+    "NUMERO": "7",
+    "POSITION": "forward"
+  },
+  {
+    "ID": "48",
+    "NOM": "Jules",
+    "PRENOM": "Mercier",
+    "NUMERO": "8",
+    "POSITION": "forward"
+  },
+  {
+    "ID": "49",
+    "NOM": "Nicolas",
+    "PRENOM": "Richard",
+    "NUMERO": "9",
+    "POSITION": "guard"
+  },
+  {
+    "ID": "50",
+    "NOM": "Louis",
+    "PRENOM": "Durand",
+    "NUMERO": "10",
+    "POSITION": "center"
+  }
+]

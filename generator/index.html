@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Générateur de matchs JSON (Vanilla JS)</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <style>
+      body {
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Arial,
+          sans-serif;
+        max-width: 980px;
+        margin: 40px auto;
+        padding: 0 16px;
+      }
+      fieldset {
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 16px;
+      }
+      label {
+        display: block;
+        margin: 0.5rem 0 0.25rem;
+      }
+      input,
+      select,
+      button {
+        padding: 0.6rem 0.8rem;
+        border: 1px solid #d1d5db;
+        border-radius: 10px;
+      }
+      button {
+        cursor: pointer;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      pre {
+        background: #0f172a;
+        color: #e2e8f0;
+        padding: 16px;
+        border-radius: 12px;
+        overflow: auto;
+        min-height: 220px;
+      }
+      .muted {
+        color: #6b7280;
+        font-size: 0.9rem;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Générateur de matchs JSON</h1>
+
+    <fieldset>
+      <legend>Paramètres</legend>
+      <div class="grid">
+        <div>
+          <label>Équipe hôte (fichier joueurs)</label>
+          <select id="hostFile">
+            <option value="../data/players-team-ACBobigny.json">
+              AC Bobigny
+            </option>
+            <option value="../data/players-team-charonne.json">Charonne</option>
+            <option value="../data/players-team-eppg.json">EPPG</option>
+            <option value="../data/players-team-noiseene.json">
+              Noisy-le-Sec
+            </option>
+          </select>
+        </div>
+        <div>
+          <label>Équipe adverse (fichier joueurs)</label>
+          <select id="opponentFile">
+            <option value="../data/players-team-charonne.json">Charonne</option>
+            <option value="../data/players-team-eppg.json">EPPG</option>
+            <option value="../data/players-team-noiseene.json">
+              Noisy-le-Sec
+            </option>
+            <option value="../data/players-team-ACBobigny.json">
+              AC Bobigny
+            </option>
+          </select>
+        </div>
+        <div>
+          <label>Division</label>
+          <select id="division"></select>
+        </div>
+        <div>
+          <label>Section</label>
+          <select id="section"></select>
+        </div>
+        <div>
+          <label>Date du match</label>
+          <input id="date" type="date" />
+        </div>
+        <div>
+          <label>Seed (reproductible)</label>
+          <input id="seed" type="number" value="12345" />
+        </div>
+        <div>
+          <label>Nombre de matchs</label>
+          <input id="matchCount" type="number" value="1" min="1" max="100" />
+        </div>
+        <div>
+          <label>Max actions par skill/joueur</label>
+          <input id="maxPerSkill" type="number" value="10" min="0" max="50" />
+        </div>
+      </div>
+      <p class="muted">
+        Astuce : change le <em>seed</em> pour varier les résultats tout en
+        restant déterministe.
+      </p>
+    </fieldset>
+
+    <p>
+      <button id="generateBtn">Générer</button>
+      <button id="downloadBtn" disabled>Télécharger le .json</button>
+    </p>
+
+    <h2>Sortie</h2>
+    <pre id="output">Clique sur “Générer”…</pre>
+
+    <script>
+      /* ===== Helpers ===== */
+      // RNG déterministe — Mulberry32
+      function rng(seed) {
+        function m(a) {
+          return function () {
+            a = (a + 0x6d2b79f5) | 0;
+            let t = Math.imul(a ^ (a >>> 15), 1 | a);
+            t ^= t + Math.imul(t ^ (t >>> 7), 61 | t);
+            return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+          };
+        }
+        return m(seed >>> 0);
+      }
+      const pad2 = (n) => String(n).padStart(2, "0");
+      function timeStamp(r) {
+        const min = Math.floor(r() * 9),
+          sec = Math.floor(r() * 60),
+          ms = Math.floor(r() * 99);
+        return `${pad2(min)}min ${pad2(sec)}sec ${pad2(ms)}`;
+      }
+      const pick = (arr, r) => arr[Math.floor(r() * arr.length)];
+      const normalizePlayers = (raw) =>
+        raw.map((p) => ({
+          id: +p.ID,
+          firstname: p.NOM,
+          lastname: p.PRENOM,
+          number: +p.NUMERO,
+        }));
+
+      // Noms lisibles depuis le chemin fichier
+      function teamNameFrom(file) {
+        if (file.includes("ACBobigny")) return "AC Bobigny";
+        if (file.includes("charonne")) return "Charonne";
+        if (file.includes("eppg")) return "EPPG";
+        if (file.includes("noiseene")) return "Noisy-le-Sec";
+        return "Team";
+      }
+
+      /* ===== Chargement sources ===== */
+      async function loadJSON(url) {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error("Fetch " + url);
+        return res.json();
+      }
+      async function loadSources() {
+        const [divisions, sections, skills, zones] = await Promise.all([
+          loadJSON("../data/divisions.json"),
+          loadJSON("../data/sections.json"),
+          loadJSON("../data/skills.json"),
+          loadJSON("../data/zones.json"),
+        ]);
+        return { divisions, sections, skills, zones };
+      }
+
+      function zonesForSkill(skill, zones) {
+        if (skill === "freethrow")
+          return zones.filter((z) => z.zone === "freethrows");
+        if (skill === "shootwiderange")
+          return zones.filter(
+            (z) =>
+              z.zone.startsWith("threepoints") ||
+              z.zone === "three-points-arc" ||
+              z.zone === "freethrows"
+          );
+        if (skill === "shootmidrange")
+          return zones.filter((z) => z.zone.startsWith("mid-range"));
+        return zones; // autres : autoriser partout
+      }
+
+      function buildSkillStat(skill, r, maxPerSkill, zones) {
+        const count = Math.floor(r() * (maxPerSkill + 1));
+        const obj = { count };
+        if (count > 0) {
+          for (let i = 1; i <= count; i++) {
+            obj[String(i)] = { time: timeStamp(r), zone: pick(zones, r).zone };
+          }
+        }
+        return obj;
+      }
+
+      function generateMatch({
+        hostName,
+        opponentName,
+        division,
+        section,
+        date,
+        hostPlayers,
+        skills,
+        zones,
+        r,
+        maxPerSkill,
+      }) {
+        const meta = {
+          team: hostName,
+          squad: 2,
+          division,
+          section,
+          game: { host: hostName, opponent: opponentName },
+          date,
+        };
+        const players = hostPlayers.map((p) => {
+          const out = {
+            id: p.id,
+            firstname: p.firstname,
+            lastname: p.lastname,
+            number: p.number,
+          };
+          skills.forEach((s) => {
+            const skill = s.skill;
+            out[skill] = buildSkillStat(
+              skill,
+              r,
+              maxPerSkill,
+              zonesForSkill(skill, zones)
+            );
+          });
+          return out;
+        });
+        return [meta, players];
+      }
+
+      /* ===== UI ===== */
+      (async function init() {
+        const { divisions, sections, skills, zones } = await loadSources();
+
+        const divSel = document.getElementById("division");
+        divisions.forEach((d) => {
+          const o = document.createElement("option");
+          o.value = d.division;
+          o.textContent = d.division;
+          divSel.appendChild(o);
+        });
+
+        const secSel = document.getElementById("section");
+        sections.forEach((s) => {
+          const o = document.createElement("option");
+          o.value = s;
+          o.textContent = s;
+          secSel.appendChild(o);
+        });
+
+        document.getElementById("date").valueAsNumber = Date.now();
+
+        document
+          .getElementById("generateBtn")
+          .addEventListener("click", async () => {
+            const hostFile = document.getElementById("hostFile").value;
+            const oppFile = document.getElementById("opponentFile").value;
+            const hostName = teamNameFrom(hostFile);
+            const oppName = teamNameFrom(oppFile);
+            const division =
+              document.getElementById("division").value ||
+              divisions[0].division;
+            const section =
+              document.getElementById("section").value || sections[0];
+            const date =
+              document.getElementById("date").value ||
+              new Date().toISOString().slice(0, 10);
+            const seed = Number(document.getElementById("seed").value) || 12345;
+            const matchCount = Math.max(
+              1,
+              Number(document.getElementById("matchCount").value) || 1
+            );
+            const maxPerSkill = Math.max(
+              0,
+              Number(document.getElementById("maxPerSkill").value) || 10
+            );
+
+            const [hostRaw] = await Promise.all([loadJSON(hostFile)]);
+            const hostPlayers = normalizePlayers(hostRaw);
+
+            const r = rng(seed);
+            const out = [];
+            for (let i = 0; i < matchCount; i++) {
+              out.push(
+                generateMatch({
+                  hostName,
+                  opponentName: oppName,
+                  division,
+                  section,
+                  date,
+                  hostPlayers,
+                  skills,
+                  zones,
+                  r,
+                  maxPerSkill,
+                })
+              );
+            }
+
+            const pretty = JSON.stringify(
+              out.length === 1 ? out[0] : out,
+              null,
+              2
+            );
+            document.getElementById("output").textContent = pretty;
+
+            const btn = document.getElementById("downloadBtn");
+            btn.disabled = false;
+            btn.onclick = () => {
+              const blob = new Blob([pretty], { type: "application/json" });
+              const a = document.createElement("a");
+              a.href = URL.createObjectURL(blob);
+              a.download = out.length === 1 ? "match.json" : "matches.json";
+              a.click();
+              URL.revokeObjectURL(a.href);
+            };
+          });
+      })();
+    </script>
+  </body>
+</html>

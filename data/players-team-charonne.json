@@ -1,0 +1,86 @@
+[
+  {
+    "ID": "21",
+    "NOM": "Maël",
+    "PRENOM": "Martin",
+    "NUMERO": "1",
+    "POSITION": "guard"
+  },
+  {
+    "ID": "22",
+    "NOM": "Robin",
+    "PRENOM": "Gautier",
+    "NUMERO": "2",
+    "POSITION": "shooting guard"
+  },
+  {
+    "ID": "23",
+    "NOM": "Maxime",
+    "PRENOM": "Henry",
+    "NUMERO": "3",
+    "POSITION": "shooting guard"
+  },
+  {
+    "ID": "24",
+    "NOM": "Robin",
+    "PRENOM": "Girard",
+    "NUMERO": "4",
+    "POSITION": "shooting guard"
+  },
+  {
+    "ID": "25",
+    "NOM": "Ethan",
+    "PRENOM": "Roussel",
+    "NUMERO": "5",
+    "POSITION": "center"
+  },
+  {
+    "ID": "26",
+    "NOM": "Paul",
+    "PRENOM": "Martin",
+    "NUMERO": "6",
+    "POSITION": "power forward"
+  },
+  {
+    "ID": "27",
+    "NOM": "Hugo",
+    "PRENOM": "Bertrand",
+    "NUMERO": "7",
+    "POSITION": "forward"
+  },
+  {
+    "ID": "28",
+    "NOM": "Antoine",
+    "PRENOM": "Fontaine",
+    "NUMERO": "8",
+    "POSITION": "forward"
+  },
+  {
+    "ID": "29",
+    "NOM": "Alexandre",
+    "PRENOM": "Dubois",
+    "NUMERO": "9",
+    "POSITION": "guard"
+  },
+  {
+    "ID": "30",
+    "NOM": "Théo",
+    "PRENOM": "Chevalier",
+    "NUMERO": "10",
+    "POSITION": "center"
+  },
+  {
+    "ID": "31",
+    "NOM": "mickeal",
+    "PRENOM": "Jordan",
+    "NUMERO": "23",
+    "POSITION": "power forward"
+  },
+  {
+    "ID": "32",
+    "NOM": "scottie",
+    "PRENOM": "Pipen",
+    "NUMERO": "5",
+    "POSITION": "power forward"
+  }
+]

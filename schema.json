@@ -1,0 +1,170 @@
+{
+  "$id": "https://example.com/basket-match.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Basket Match Export",
+  "description": "Structure d'un export de match: [meta, players[]]",
+  "type": "array",
+  "minItems": 2,
+  "maxItems": 2,
+  "prefixItems": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["team", "division", "section", "game", "date"],
+      "properties": {
+        "team": { "type": "string", "minLength": 1 },
+        "squad": { "type": "integer", "minimum": 0 },
+        "division": {
+          "type": "string",
+          "enum": [
+            "nationale 1",
+            "nationale 2",
+            "nationale 3",
+            "region 1",
+            "region 2",
+            "region 3",
+            "departementale 1",
+            "departementale 2",
+            "departementale 3",
+            "departementale 4"
+          ]
+        },
+        "section": {
+          "type": "string",
+          "enum": ["U18M", "U18F", "U21M", "U21F", "SéniorsH", "SéniorsF"]
+        },
+        "game": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["host", "opponent"],
+          "properties": {
+            "host": { "type": "string", "minLength": 1 },
+            "opponent": { "type": "string", "minLength": 1 }
+          }
+        },
+        "date": {
+          "type": "string",
+          "description": "Date ISO au format YYYY-MM-DD",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+        }
+      }
+    },
+    {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "description": "Données d'un joueur + stats par skill",
+        "required": [
+          "id",
+          "firstname",
+          "lastname",
+          "number",
+          "shootmidrange",
+          "shootwiderange",
+          "freethrow",
+          "layup",
+          "dunk",
+          "teardrop",
+          "tipin",
+          "offrebound",
+          "defrebound",
+          "block",
+          "steal",
+          "assist",
+          "duelwon"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "id": { "type": "integer", "minimum": 1 },
+          "firstname": { "type": "string", "minLength": 1 },
+          "lastname": { "type": "string", "minLength": 1 },
+          "number": { "type": "integer", "minimum": 0 },
+
+          "shootmidrange": { "$ref": "#/$defs/skillStat" },
+          "shootwiderange": { "$ref": "#/$defs/skillStat" },
+          "freethrow": { "$ref": "#/$defs/skillStat" },
+          "layup": { "$ref": "#/$defs/skillStat" },
+          "dunk": { "$ref": "#/$defs/skillStat" },
+          "teardrop": { "$ref": "#/$defs/skillStat" },
+          "tipin": { "$ref": "#/$defs/skillStat" },
+          "offrebound": { "$ref": "#/$defs/skillStat" },
+          "defrebound": { "$ref": "#/$defs/skillStat" },
+          "block": { "$ref": "#/$defs/skillStat" },
+          "steal": { "$ref": "#/$defs/skillStat" },
+          "assist": { "$ref": "#/$defs/skillStat" },
+          "duelwon": { "$ref": "#/$defs/skillStat" }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "evt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["time", "zone"],
+      "properties": {
+        "time": {
+          "type": "string",
+          "description": "Horodatage lisible (ex. 03min 37sec 44)"
+        },
+        "zone": {
+          "type": "string",
+          "enum": [
+            "freethrows",
+            "three-points-arc",
+            "mid-range-close-left-top",
+            "mid-range-close-left-middle",
+            "mid-range-close-left-bottom",
+            "mid-range-wide-left-bottom-arc",
+            "mid-range-wide-left-top",
+            "mid-range-wide-left-middle",
+            "mid-range-close-right-top",
+            "mid-range-close-right-middle",
+            "mid-range-close-right-bottom",
+            "mid-range-wide-right-bottom-arc",
+            "mid-range-wide-right-top",
+            "mid-range-wide-right-middle",
+            "threepoints-range-north-west",
+            "threepoints-range-north-east",
+            "threepoints-range-south-west",
+            "threepoints-range-south-east",
+            "threepoints-range-middle-north",
+            "threepoints-range-middle-south",
+            "threepoints-range-middle",
+            "mid-range-close-left-top-e",
+            "mid-range-close-left-middle-e",
+            "mid-range-close-left-bottom-e",
+            "mid-range-wide-left-bottom-arc-e",
+            "mid-range-wide-left-top-e",
+            "mid-range-wide-left-middle-e",
+            "mid-range-close-right-top-e",
+            "mid-range-close-right-middle-e",
+            "mid-range-close-right-bottom-e",
+            "mid-range-wide-right-bottom-arc-e",
+            "mid-range-wide-right-top-e",
+            "mid-range-wide-right-middle-e",
+            "threepoints-range-north-west-e",
+            "threepoints-range-north-east-e",
+            "threepoints-range-south-west-e",
+            "threepoints-range-south-east-e",
+            "threepoints-range-middle-north-e",
+            "threepoints-range-middle-south-e",
+            "threepoints-range-middle-e"
+          ]
+        }
+      }
+    },
+    "skillStat": {
+      "type": "object",
+      "description": "Compteur + événements indexés 1..N",
+      "required": ["count"],
+      "properties": {
+        "count": { "type": "integer", "minimum": 0 }
+      },
+      "patternProperties": {
+        "^[1-9]\\d*$": { "$ref": "#/$defs/evt" }
+      },
+      "additionalProperties": false
+    }
+  }
+}

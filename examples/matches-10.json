@@ -1,0 +1,434 @@
+[
+  [
+    {
+      "team": "AC Bobigny",
+      "squad": 2,
+      "division": "nationale 2",
+      "section": "U18M",
+      "game": { "host": "AC Bobigny", "opponent": "Charonne" },
+      "date": "2025-09-03"
+    },
+    [
+      {
+        "id": 11,
+        "firstname": "Thomas",
+        "lastname": "Andre",
+        "number": 1,
+        "shootmidrange": {
+          "count": 1,
+          "1": { "time": "02min 14sec 32", "zone": "mid-range-close-left-top" }
+        },
+        "shootwiderange": { "count": 0 },
+        "freethrow": {
+          "count": 1,
+          "1": { "time": "03min 05sec 12", "zone": "freethrows" }
+        },
+        "layup": { "count": 0 },
+        "dunk": { "count": 0 },
+        "teardrop": { "count": 0 },
+        "tipin": { "count": 0 },
+        "offrebound": {
+          "count": 1,
+          "1": {
+            "time": "04min 41sec 22",
+            "zone": "mid-range-wide-right-middle"
+          }
+        },
+        "defrebound": { "count": 0 },
+        "block": { "count": 0 },
+        "steal": { "count": 0 },
+        "assist": { "count": 0 },
+        "duelwon": { "count": 0 }
+      }
+    ]
+  ],
+  [
+    {
+      "team": "Charonne",
+      "squad": 2,
+      "division": "region 1",
+      "section": "U18F",
+      "game": { "host": "Charonne", "opponent": "EPPG" },
+      "date": "2025-09-03"
+    },
+    [
+      {
+        "id": 21,
+        "firstname": "Maël",
+        "lastname": "Martin",
+        "number": 1,
+        "shootmidrange": { "count": 0 },
+        "shootwiderange": {
+          "count": 1,
+          "1": { "time": "01min 44sec 05", "zone": "threepoints-range-middle" }
+        },
+        "freethrow": { "count": 0 },
+        "layup": {
+          "count": 1,
+          "1": { "time": "07min 12sec 33", "zone": "freethrows" }
+        },
+        "dunk": { "count": 0 },
+        "teardrop": { "count": 0 },
+        "tipin": { "count": 0 },
+        "offrebound": { "count": 0 },
+        "defrebound": {
+          "count": 1,
+          "1": { "time": "06min 25sec 87", "zone": "mid-range-wide-left-top" }
+        },
+        "block": { "count": 0 },
+        "steal": { "count": 0 },
+        "assist": { "count": 0 },
+        "duelwon": { "count": 0 }
+      }
+    ]
+  ],
+  [
+    {
+      "team": "EPPG",
+      "squad": 2,
+      "division": "region 2",
+      "section": "U21M",
+      "game": { "host": "EPPG", "opponent": "Noisy-le-Sec" },
+      "date": "2025-09-03"
+    },
+    [
+      {
+        "id": 31,
+        "firstname": "Lucas",
+        "lastname": "Bernard",
+        "number": 7,
+        "shootmidrange": {
+          "count": 2,
+          "1": {
+            "time": "02min 10sec 08",
+            "zone": "mid-range-close-right-middle"
+          },
+          "2": { "time": "05min 03sec 55", "zone": "mid-range-wide-right-top" }
+        },
+        "shootwiderange": { "count": 0 },
+        "freethrow": { "count": 0 },
+        "layup": { "count": 0 },
+        "dunk": { "count": 0 },
+        "teardrop": { "count": 0 },
+        "tipin": { "count": 0 },
+        "offrebound": { "count": 0 },
+        "defrebound": {
+          "count": 1,
+          "1": {
+            "time": "07min 58sec 44",
+            "zone": "mid-range-wide-left-middle"
+          }
+        },
+        "block": { "count": 0 },
+        "steal": {
+          "count": 1,
+          "1": {
+            "time": "03min 36sec 21",
+            "zone": "mid-range-close-left-bottom"
+          }
+        },
+        "assist": { "count": 0 },
+        "duelwon": { "count": 0 }
+      }
+    ]
+  ],
+  [
+    {
+      "team": "Noisy-le-Sec",
+      "squad": 2,
+      "division": "region 3",
+      "section": "U21F",
+      "game": { "host": "Noisy-le-Sec", "opponent": "AC Bobigny" },
+      "date": "2025-09-03"
+    },
+    [
+      {
+        "id": 41,
+        "firstname": "Jade",
+        "lastname": "Moreau",
+        "number": 10,
+        "shootmidrange": { "count": 0 },
+        "shootwiderange": {
+          "count": 1,
+          "1": {
+            "time": "06min 11sec 19",
+            "zone": "threepoints-range-north-east"
+          }
+        },
+        "freethrow": { "count": 0 },
+        "layup": { "count": 0 },
+        "dunk": { "count": 0 },
+        "teardrop": {
+          "count": 1,
+          "1": {
+            "time": "02min 59sec 07",
+            "zone": "mid-range-close-left-middle"
+          }
+        },
+        "tipin": { "count": 0 },
+        "offrebound": { "count": 0 },
+        "defrebound": { "count": 0 },
+        "block": { "count": 0 },
+        "steal": { "count": 0 },
+        "assist": { "count": 0 },
+        "duelwon": { "count": 0 }
+      }
+    ]
+  ],
+  [
+    {
+      "team": "AC Bobigny",
+      "squad": 2,
+      "division": "departementale 1",
+      "section": "SéniorsH",
+      "game": { "host": "AC Bobigny", "opponent": "EPPG" },
+      "date": "2025-09-03"
+    },
+    [
+      {
+        "id": 12,
+        "firstname": "Raphaël",
+        "lastname": "Dubois",
+        "number": 2,
+        "shootmidrange": { "count": 0 },
+        "shootwiderange": {
+          "count": 1,
+          "1": {
+            "time": "01min 22sec 45",
+            "zone": "threepoints-range-middle-south"
+          }
+        },
+        "freethrow": { "count": 0 },
+        "layup": { "count": 0 },
+        "dunk": { "count": 0 },
+        "teardrop": { "count": 0 },
+        "tipin": { "count": 0 },
+        "offrebound": { "count": 0 },
+        "defrebound": {
+          "count": 1,
+          "1": { "time": "08min 03sec 02", "zone": "mid-range-close-right-top" }
+        },
+        "block": { "count": 0 },
+        "steal": { "count": 0 },
+        "assist": {
+          "count": 1,
+          "1": { "time": "07min 55sec 66", "zone": "mid-range-wide-left-top" }
+        },
+        "duelwon": { "count": 0 }
+      }
+    ]
+  ],
+  [
+    {
+      "team": "Charonne",
+      "squad": 2,
+      "division": "departementale 2",
+      "section": "SéniorsF",
+      "game": { "host": "Charonne", "opponent": "Noisy-le-Sec" },
+      "date": "2025-09-03"
+    },
+    [
+      {
+        "id": 22,
+        "firstname": "Emma",
+        "lastname": "Leroy",
+        "number": 4,
+        "shootmidrange": {
+          "count": 1,
+          "1": {
+            "time": "03min 14sec 41",
+            "zone": "mid-range-close-right-bottom"
+          }
+        },
+        "shootwiderange": { "count": 0 },
+        "freethrow": {
+          "count": 1,
+          "1": { "time": "05min 40sec 09", "zone": "freethrows" }
+        },
+        "layup": { "count": 0 },
+        "dunk": { "count": 0 },
+        "teardrop": { "count": 0 },
+        "tipin": { "count": 0 },
+        "offrebound": { "count": 0 },
+        "defrebound": { "count": 0 },
+        "block": { "count": 0 },
+        "steal": { "count": 0 },
+        "assist": { "count": 0 },
+        "duelwon": { "count": 0 }
+      }
+    ]
+  ],
+  [
+    {
+      "team": "EPPG",
+      "squad": 2,
+      "division": "departementale 3",
+      "section": "U18M",
+      "game": { "host": "EPPG", "opponent": "AC Bobigny" },
+      "date": "2025-09-03"
+    },
+    [
+      {
+        "id": 32,
+        "firstname": "Noah",
+        "lastname": "Garcia",
+        "number": 12,
+        "shootmidrange": { "count": 0 },
+        "shootwiderange": {
+          "count": 2,
+          "1": {
+            "time": "02min 33sec 18",
+            "zone": "threepoints-range-north-west"
+          },
+          "2": {
+            "time": "06min 21sec 77",
+            "zone": "threepoints-range-middle-north"
+          }
+        },
+        "freethrow": { "count": 0 },
+        "layup": { "count": 0 },
+        "dunk": { "count": 0 },
+        "teardrop": { "count": 0 },
+        "tipin": { "count": 0 },
+        "offrebound": { "count": 0 },
+        "defrebound": {
+          "count": 1,
+          "1": {
+            "time": "07min 10sec 51",
+            "zone": "mid-range-wide-right-bottom-arc"
+          }
+        },
+        "block": { "count": 0 },
+        "steal": { "count": 0 },
+        "assist": { "count": 0 },
+        "duelwon": { "count": 0 }
+      }
+    ]
+  ],
+  [
+    {
+      "team": "Noisy-le-Sec",
+      "squad": 2,
+      "division": "departementale 4",
+      "section": "U18F",
+      "game": { "host": "Noisy-le-Sec", "opponent": "Charonne" },
+      "date": "2025-09-03"
+    },
+    [
+      {
+        "id": 42,
+        "firstname": "Léa",
+        "lastname": "Chevalier",
+        "number": 9,
+        "shootmidrange": {
+          "count": 1,
+          "1": {
+            "time": "03min 01sec 05",
+            "zone": "mid-range-wide-left-middle"
+          }
+        },
+        "shootwiderange": { "count": 0 },
+        "freethrow": { "count": 0 },
+        "layup": { "count": 0 },
+        "dunk": { "count": 0 },
+        "teardrop": { "count": 0 },
+        "tipin": {
+          "count": 1,
+          "1": { "time": "06min 49sec 28", "zone": "mid-range-close-right-top" }
+        },
+        "offrebound": { "count": 0 },
+        "defrebound": { "count": 0 },
+        "block": { "count": 0 },
+        "steal": { "count": 0 },
+        "assist": { "count": 0 },
+        "duelwon": { "count": 0 }
+      }
+    ]
+  ],
+  [
+    {
+      "team": "AC Bobigny",
+      "squad": 2,
+      "division": "nationale 1",
+      "section": "U21M",
+      "game": { "host": "AC Bobigny", "opponent": "Noisy-le-Sec" },
+      "date": "2025-09-03"
+    },
+    [
+      {
+        "id": 13,
+        "firstname": "Ethan",
+        "lastname": "Gauthier",
+        "number": 5,
+        "shootmidrange": { "count": 0 },
+        "shootwiderange": {
+          "count": 1,
+          "1": {
+            "time": "04min 55sec 12",
+            "zone": "threepoints-range-south-east"
+          }
+        },
+        "freethrow": { "count": 0 },
+        "layup": {
+          "count": 1,
+          "1": { "time": "02min 40sec 37", "zone": "freethrows" }
+        },
+        "dunk": { "count": 0 },
+        "teardrop": { "count": 0 },
+        "tipin": { "count": 0 },
+        "offrebound": { "count": 0 },
+        "defrebound": {
+          "count": 1,
+          "1": {
+            "time": "07min 22sec 03",
+            "zone": "mid-range-close-left-bottom"
+          }
+        },
+        "block": { "count": 0 },
+        "steal": { "count": 0 },
+        "assist": { "count": 0 },
+        "duelwon": { "count": 0 }
+      }
+    ]
+  ],
+  [
+    {
+      "team": "Charonne",
+      "squad": 2,
+      "division": "nationale 3",
+      "section": "U21F",
+      "game": { "host": "Charonne", "opponent": "AC Bobigny" },
+      "date": "2025-09-03"
+    },
+    [
+      {
+        "id": 23,
+        "firstname": "Zoé",
+        "lastname": "Rousseau",
+        "number": 14,
+        "shootmidrange": { "count": 0 },
+        "shootwiderange": { "count": 0 },
+        "freethrow": {
+          "count": 1,
+          "1": { "time": "05min 04sec 46", "zone": "freethrows" }
+        },
+        "layup": { "count": 0 },
+        "dunk": { "count": 0 },
+        "teardrop": { "count": 0 },
+        "tipin": { "count": 0 },
+        "offrebound": { "count": 0 },
+        "defrebound": {
+          "count": 1,
+          "1": {
+            "time": "06min 14sec 58",
+            "zone": "mid-range-wide-right-middle"
+          }
+        },
+        "block": { "count": 0 },
+        "steal": { "count": 0 },
+        "assist": { "count": 0 },
+        "duelwon": { "count": 0 }
+      }
+    ]
+  ]
+]

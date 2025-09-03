@@ -1,0 +1,65 @@
+[
+  {
+    "team": "AC Bobigny",
+    "squad": 2,
+    "division": "nationale 2",
+    "section": "U18M",
+    "game": { "host": "AC Bobigny", "opponent": "Charonne" },
+    "date": "2025-09-03"
+  },
+  [
+    {
+      "id": 11,
+      "firstname": "Thomas",
+      "lastname": "Andre",
+      "number": 1,
+      "shootmidrange": {
+        "count": 1,
+        "1": { "time": "02min 14sec 32", "zone": "mid-range-close-left-top" }
+      },
+      "shootwiderange": { "count": 0 },
+      "freethrow": { "count": 0 },
+      "layup": {
+        "count": 1,
+        "1": { "time": "04min 10sec 12", "zone": "freethrows" }
+      },
+      "dunk": { "count": 0 },
+      "teardrop": { "count": 0 },
+      "tipin": { "count": 0 },
+      "offrebound": { "count": 0 },
+      "defrebound": {
+        "count": 1,
+        "1": { "time": "06min 25sec 87", "zone": "mid-range-wide-right-top" }
+      },
+      "block": { "count": 0 },
+      "steal": { "count": 0 },
+      "assist": { "count": 0 },
+      "duelwon": { "count": 0 }
+    },
+    {
+      "id": 12,
+      "firstname": "Raphaël",
+      "lastname": "Dubois",
+      "number": 2,
+      "shootmidrange": { "count": 0 },
+      "shootwiderange": {
+        "count": 1,
+        "1": { "time": "01min 44sec 05", "zone": "threepoints-range-middle" }
+      },
+      "freethrow": { "count": 0 },
+      "layup": { "count": 0 },
+      "dunk": { "count": 0 },
+      "teardrop": { "count": 0 },
+      "tipin": { "count": 0 },
+      "offrebound": { "count": 0 },
+      "defrebound": { "count": 0 },
+      "block": { "count": 0 },
+      "steal": { "count": 0 },
+      "assist": {
+        "count": 1,
+        "1": { "time": "07min 55sec 66", "zone": "mid-range-wide-left-top" }
+      },
+      "duelwon": { "count": 0 }
+    }
+  ]
+]
