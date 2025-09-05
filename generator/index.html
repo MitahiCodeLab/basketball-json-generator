@@ -114,6 +114,18 @@
       </p>
     </fieldset>
 
+    <label
+      style="
+        display: inline-flex;
+        gap: 0.5rem;
+        align-items: center;
+        margin-left: 0.5rem;
+      "
+    >
+      <input type="checkbox" id="zoneFirst" />
+      Tirer le skill à partir de la zone
+    </label>
+
     <p>
       <button id="generateBtn">Générer</button>
       <button id="downloadBtn" disabled>Télécharger le .json</button>
@@ -124,6 +136,92 @@
 
     <script>
       /* ===== Helpers ===== */
+      function zoneCategory(zone) {
+        if (zone === "freethrows") return "freethrows";
+        if (zone === "three-points-arc" || zone.startsWith("threepoints"))
+          return "three";
+        if (zone.startsWith("mid-range-close")) return "mid-close";
+        if (zone.startsWith("mid-range-wide")) return "mid-wide";
+        if (zone.startsWith("mid-range")) return "mid";
+        return "other";
+      }
+
+      const allowedSkillsByCategory = {
+        freethrows: ["freethrow", "layup", "teardrop", "tipin", "dunk"],
+        "mid-close": ["shootmidrange", "layup", "teardrop", "tipin", "dunk"],
+        "mid-wide": ["shootmidrange", "teardrop"],
+        mid: ["shootmidrange", "teardrop"],
+        three: ["shootwiderange"],
+        other: [
+          "shootmidrange",
+          "shootwiderange",
+          "freethrow",
+          "layup",
+          "teardrop",
+          "tipin",
+          "dunk",
+        ],
+      };
+
+      function emptySkillBag(skills) {
+        const o = {};
+        skills.forEach((s) => (o[s.skill] = { count: 0 }));
+        return o;
+      }
+      function nextIndex(obj) {
+        return String(++obj.count);
+      }
+
+      function generatePlayerZoneFirst(p, skills, zones, r, maxPerSkill) {
+        const targets = {};
+        let total = 0;
+        skills.forEach((s) => {
+          const n = Math.floor(r() * (maxPerSkill + 1));
+          targets[s.skill] = n;
+          total += n;
+        });
+        const out = {
+          id: p.id,
+          firstname: p.firstname,
+          lastname: p.lastname,
+          number: p.number,
+          ...emptySkillBag(skills),
+        };
+
+        const skillsLeft = () => Object.values(targets).some((n) => n > 0);
+        let guard = 0;
+        while (skillsLeft() && guard++ < total * 5) {
+          const z = zones[Math.floor(r() * zones.length)].zone;
+          const cat = zoneCategory(z);
+          const allowed = (
+            allowedSkillsByCategory[cat] || allowedSkillsByCategory.other
+          ).filter((sk) => (targets[sk] || 0) > 0);
+          if (!allowed.length) continue;
+          const sk = allowed[Math.floor(r() * allowed.length)];
+          const idx = nextIndex(out[sk]);
+          out[sk][idx] = { time: timeStamp(r), zone: z };
+          targets[sk]--;
+        }
+
+        // complétion de sécurité si quota restant
+        Object.entries(targets).forEach(([sk, n]) => {
+          for (let i = 0; i < n; i++) {
+            const cat =
+              Object.keys(allowedSkillsByCategory).find((k) =>
+                allowedSkillsByCategory[k].includes(sk)
+              ) || "other";
+            const zc = zones.filter((zz) => zoneCategory(zz.zone) === cat);
+            const z = (zc.length ? zc : zones)[
+              Math.floor(r() * (zc.length ? zc.length : zones.length))
+            ].zone;
+            const idx = nextIndex(out[sk]);
+            out[sk][idx] = { time: timeStamp(r), zone: z };
+          }
+        });
+
+        return out;
+      }
+
       // RNG déterministe — Mulberry32
       function rng(seed) {
         function m(a) {
@@ -223,24 +321,34 @@
           game: { host: hostName, opponent: opponentName },
           date,
         };
-        const players = hostPlayers.map((p) => {
-          const out = {
-            id: p.id,
-            firstname: p.firstname,
-            lastname: p.lastname,
-            number: p.number,
-          };
-          skills.forEach((s) => {
-            const skill = s.skill;
-            out[skill] = buildSkillStat(
-              skill,
-              r,
-              maxPerSkill,
-              zonesForSkill(skill, zones)
-            );
-          });
-          return out;
-        });
+        const zoneFirst = document.getElementById("zoneFirst")?.checked;
+        const players = hostPlayers.map((p) =>
+          zoneFirst
+            ? generatePlayerZoneFirst(p, skills, zones, r, maxPerSkill)
+            : (function playerSkillFirst() {
+                const out = {
+                  id: p.id,
+                  firstname: p.firstname,
+                  lastname: p.lastname,
+                  number: p.number,
+                };
+                skills.forEach((s) => {
+                  const sk = s.skill,
+                    zlist = zonesForSkill(sk, zones);
+                  const count = Math.floor(r() * (maxPerSkill + 1));
+                  const obj = { count: 0 };
+                  for (let i = 0; i < count; i++) {
+                    const idx = String(++obj.count);
+                    obj[idx] = {
+                      time: timeStamp(r),
+                      zone: zlist[Math.floor(r() * zlist.length)].zone,
+                    };
+                  }
+                  out[sk] = obj;
+                });
+                return out;
+              })()
+        );
         return [meta, players];
       }
 
