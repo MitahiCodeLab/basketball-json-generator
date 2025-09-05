@@ -166,5 +166,117 @@
       },
       "additionalProperties": false
     }
-  }
+  },
+  "allOf": [
+    {
+      "prefixItems": [
+        {},
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "freethrow": {
+                "type": "object",
+                "patternProperties": {
+                  "^[1-9]\\d*$": {
+                    "type": "object",
+                    "properties": { "zone": { "const": "freethrows" } },
+                    "required": ["time", "zone"]
+                  }
+                }
+              },
+              "shootwiderange": {
+                "type": "object",
+                "patternProperties": {
+                  "^[1-9]\\d*$": {
+                    "type": "object",
+                    "properties": {
+                      "zone": {
+                        "type": "string",
+                        "pattern": "^(three-points-arc|threepoints-)"
+                      }
+                    },
+                    "required": ["time", "zone"]
+                  }
+                }
+              },
+              "shootmidrange": {
+                "type": "object",
+                "patternProperties": {
+                  "^[1-9]\\d*$": {
+                    "type": "object",
+                    "properties": {
+                      "zone": { "type": "string", "pattern": "^mid-range" }
+                    },
+                    "required": ["time", "zone"]
+                  }
+                }
+              },
+              "layup": {
+                "type": "object",
+                "patternProperties": {
+                  "^[1-9]\\d*$": {
+                    "type": "object",
+                    "properties": {
+                      "zone": {
+                        "type": "string",
+                        "pattern": "^mid-range-close"
+                      }
+                    },
+                    "required": ["time", "zone"]
+                  }
+                }
+              },
+              "dunk": {
+                "type": "object",
+                "patternProperties": {
+                  "^[1-9]\\d*$": {
+                    "type": "object",
+                    "properties": {
+                      "zone": {
+                        "type": "string",
+                        "pattern": "^mid-range-close"
+                      }
+                    },
+                    "required": ["time", "zone"]
+                  }
+                }
+              },
+              "teardrop": {
+                "type": "object",
+                "patternProperties": {
+                  "^[1-9]\\d*$": {
+                    "type": "object",
+                    "properties": {
+                      "zone": {
+                        "type": "string",
+                        "pattern": "^mid-range-close"
+                      }
+                    },
+                    "required": ["time", "zone"]
+                  }
+                }
+              },
+              "tipin": {
+                "type": "object",
+                "patternProperties": {
+                  "^[1-9]\\d*$": {
+                    "type": "object",
+                    "properties": {
+                      "zone": {
+                        "type": "string",
+                        "pattern": "^mid-range-close"
+                      }
+                    },
+                    "required": ["time", "zone"]
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
 }
