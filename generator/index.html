@@ -135,7 +135,6 @@
     <pre id="output">Clique sur “Générer”…</pre>
 
     <script>
-      /* ===== Mapping canonique: SKILL → ZONES AUTORISÉES ===== */
       const Z = {
         midClose: [
           "mid-range-close-left-top",
@@ -189,13 +188,16 @@
         freethrow: [...Z.ft],
         shootwiderange: [...Z.three],
         shootmidrange: [...Z.midClose, ...Z.midWide],
+
         layup: [...Z.midClose, ...Z.ft],
         dunk: [...Z.midClose, ...Z.ft],
         teardrop: [...Z.midClose, ...Z.ft],
         tipin: [...Z.midClose, ...Z.ft],
+
         offrebound: [...Z.midClose, ...Z.midWide],
         defrebound: [...Z.midClose, ...Z.midWide],
         block: [...Z.midClose, ...Z.midWide],
+
         steal: [...Z.ft, ...Z.midClose, ...Z.midWide, ...Z.three],
         assist: [...Z.ft, ...Z.midClose, ...Z.midWide, ...Z.three],
         duelwon: [...Z.ft, ...Z.midClose, ...Z.midWide, ...Z.three],
@@ -203,11 +205,23 @@
 
       function allowedZonesForSkill(skill, zones) {
         const allow = allowedZonesBySkill[skill];
-        if (!allow) return zones.map((z) => z.zone);
+        if (!allow) {
+          console.warn("[mapping] skill sans mapping:", skill);
+          return [];
+        }
         const set = new Set(allow);
-        return zones.map((z) => z.zone).filter((z) => set.has(z));
+        const list = zones.map((z) => z.zone).filter((z) => set.has(z));
+        if (list.length === 0) {
+          console.error(
+            "[mapping] aucune zone autorisée trouvée dans zones.json pour",
+            skill,
+            "→ aucun event généré pour ce skill"
+          );
+        }
+        return list;
       }
 
+      /* ===== Helpers ===== */
       function emptySkillBag(skills) {
         const o = {};
         skills.forEach((s) => (o[s.skill] = { count: 0 }));
@@ -217,7 +231,6 @@
         return String(++obj.count);
       }
 
-      // RNG déterministe — Mulberry32
       function rng(seed) {
         function m(a) {
           return function () {
@@ -268,6 +281,7 @@
       }
 
       function generatePlayerZoneFirst(p, skills, zones, r, maxPerSkill) {
+        // quotas par skill
         const targets = {};
         let total = 0;
         skills.forEach((s) => {
@@ -275,6 +289,14 @@
           targets[s.skill] = n;
           total += n;
         });
+
+        const allowedSetBySkill = {};
+        skills.forEach((s) => {
+          allowedSetBySkill[s.skill] = new Set(
+            allowedZonesForSkill(s.skill, zones)
+          );
+        });
+
         const out = {
           id: p.id,
           firstname: p.firstname,
@@ -285,13 +307,13 @@
 
         const skillsLeft = () => Object.values(targets).some((n) => n > 0);
         let guard = 0;
-        while (skillsLeft() && guard++ < total * 6) {
+        while (skillsLeft() && guard++ < total * 8) {
           const z = zones[Math.floor(r() * zones.length)].zone;
           const candidates = Object.keys(targets).filter(
-            (sk) =>
-              targets[sk] > 0 && allowedZonesForSkill(sk, zones).includes(z)
+            (sk) => targets[sk] > 0 && allowedSetBySkill[sk].has(z)
           );
           if (!candidates.length) continue;
+
           const sk = candidates[Math.floor(r() * candidates.length)];
           const idx = nextIndex(out[sk]);
           out[sk][idx] = { time: timeStamp(r), zone: z };
@@ -299,8 +321,19 @@
         }
 
         Object.entries(targets).forEach(([sk, n]) => {
+          if (n <= 0) return;
+          const zlist = [...allowedSetBySkill[sk]];
+          if (zlist.length === 0) {
+            console.warn(
+              "[mapping] pas de zones autorisées pour",
+              sk,
+              "→ events ignorés (count resté à",
+              n,
+              ")"
+            );
+            return;
+          }
           for (let i = 0; i < n; i++) {
-            const zlist = allowedZonesForSkill(sk, zones);
             const z = zlist[Math.floor(r() * zlist.length)];
             const idx = nextIndex(out[sk]);
             out[sk][idx] = { time: timeStamp(r), zone: z };
@@ -330,6 +363,7 @@
           game: { host: hostName, opponent: opponentName },
           date,
         };
+
         const zoneFirst = document.getElementById("zoneFirst")?.checked;
         const players = hostPlayers.map((p) =>
           zoneFirst
@@ -343,9 +377,15 @@
                 };
                 skills.forEach((s) => {
                   const sk = s.skill;
-                  const zlist = allowedZonesForSkill(sk, zones);
+                  const zlist = allowedZonesForSkill(sk, zones); // mapping strict
                   const count = Math.floor(r() * (maxPerSkill + 1));
                   const obj = { count: 0 };
+
+                  if (zlist.length === 0) {
+                    out[sk] = obj;
+                    return;
+                  }
+
                   for (let i = 0; i < count; i++) {
                     const idx = String(++obj.count);
                     obj[idx] = {
@@ -358,9 +398,11 @@
                 return out;
               })()
         );
+
         return [meta, players];
       }
 
+      /* ===== UI ===== */
       (async function init() {
         const { divisions, sections, skills, zones } = await loadSources();
 
