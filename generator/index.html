@@ -135,33 +135,78 @@
     <pre id="output">Clique sur “Générer”…</pre>
 
     <script>
-      /* ===== Helpers ===== */
-      function zoneCategory(zone) {
-        if (zone === "freethrows") return "freethrows";
-        if (zone === "three-points-arc" || zone.startsWith("threepoints"))
-          return "three";
-        if (zone.startsWith("mid-range-close")) return "mid-close";
-        if (zone.startsWith("mid-range-wide")) return "mid-wide";
-        if (zone.startsWith("mid-range")) return "mid";
-        return "other";
-      }
-
-      const allowedSkillsByCategory = {
-        freethrows: ["freethrow", "layup", "teardrop", "tipin", "dunk"],
-        "mid-close": ["shootmidrange", "layup", "teardrop", "tipin", "dunk"],
-        "mid-wide": ["shootmidrange", "teardrop"],
-        mid: ["shootmidrange", "teardrop"],
-        three: ["shootwiderange"],
-        other: [
-          "shootmidrange",
-          "shootwiderange",
-          "freethrow",
-          "layup",
-          "teardrop",
-          "tipin",
-          "dunk",
+      /* ===== Mapping canonique: SKILL → ZONES AUTORISÉES ===== */
+      const Z = {
+        midClose: [
+          "mid-range-close-left-top",
+          "mid-range-close-left-middle",
+          "mid-range-close-left-bottom",
+          "mid-range-close-right-top",
+          "mid-range-close-right-middle",
+          "mid-range-close-right-bottom",
+          "mid-range-close-left-top-e",
+          "mid-range-close-left-middle-e",
+          "mid-range-close-left-bottom-e",
+          "mid-range-close-right-top-e",
+          "mid-range-close-right-middle-e",
+          "mid-range-close-right-bottom-e",
         ],
+        midWide: [
+          "mid-range-wide-left-bottom-arc",
+          "mid-range-wide-left-top",
+          "mid-range-wide-left-middle",
+          "mid-range-wide-right-bottom-arc",
+          "mid-range-wide-right-top",
+          "mid-range-wide-right-middle",
+          "mid-range-wide-left-bottom-arc-e",
+          "mid-range-wide-left-top-e",
+          "mid-range-wide-left-middle-e",
+          "mid-range-wide-right-bottom-arc-e",
+          "mid-range-wide-right-top-e",
+          "mid-range-wide-right-middle-e",
+        ],
+        three: [
+          "three-points-arc",
+          "threepoints-range-north-west",
+          "threepoints-range-north-east",
+          "threepoints-range-south-west",
+          "threepoints-range-south-east",
+          "threepoints-range-middle-north",
+          "threepoints-range-middle-south",
+          "threepoints-range-middle",
+          "threepoints-range-north-west-e",
+          "threepoints-range-north-east-e",
+          "threepoints-range-south-west-e",
+          "threepoints-range-south-east-e",
+          "threepoints-range-middle-north-e",
+          "threepoints-range-middle-south-e",
+          "threepoints-range-middle-e",
+        ],
+        ft: ["freethrows"],
       };
+
+      const allowedZonesBySkill = {
+        freethrow: [...Z.ft],
+        shootwiderange: [...Z.three],
+        shootmidrange: [...Z.midClose, ...Z.midWide],
+        layup: [...Z.midClose, ...Z.ft],
+        dunk: [...Z.midClose, ...Z.ft],
+        teardrop: [...Z.midClose, ...Z.ft],
+        tipin: [...Z.midClose, ...Z.ft],
+        offrebound: [...Z.midClose, ...Z.midWide],
+        defrebound: [...Z.midClose, ...Z.midWide],
+        block: [...Z.midClose, ...Z.midWide],
+        steal: [...Z.ft, ...Z.midClose, ...Z.midWide, ...Z.three],
+        assist: [...Z.ft, ...Z.midClose, ...Z.midWide, ...Z.three],
+        duelwon: [...Z.ft, ...Z.midClose, ...Z.midWide, ...Z.three],
+      };
+
+      function allowedZonesForSkill(skill, zones) {
+        const allow = allowedZonesBySkill[skill];
+        if (!allow) return zones.map((z) => z.zone);
+        const set = new Set(allow);
+        return zones.map((z) => z.zone).filter((z) => set.has(z));
+      }
 
       function emptySkillBag(skills) {
         const o = {};
@@ -170,56 +215,6 @@
       }
       function nextIndex(obj) {
         return String(++obj.count);
-      }
-
-      function generatePlayerZoneFirst(p, skills, zones, r, maxPerSkill) {
-        const targets = {};
-        let total = 0;
-        skills.forEach((s) => {
-          const n = Math.floor(r() * (maxPerSkill + 1));
-          targets[s.skill] = n;
-          total += n;
-        });
-        const out = {
-          id: p.id,
-          firstname: p.firstname,
-          lastname: p.lastname,
-          number: p.number,
-          ...emptySkillBag(skills),
-        };
-
-        const skillsLeft = () => Object.values(targets).some((n) => n > 0);
-        let guard = 0;
-        while (skillsLeft() && guard++ < total * 5) {
-          const z = zones[Math.floor(r() * zones.length)].zone;
-          const cat = zoneCategory(z);
-          const allowed = (
-            allowedSkillsByCategory[cat] || allowedSkillsByCategory.other
-          ).filter((sk) => (targets[sk] || 0) > 0);
-          if (!allowed.length) continue;
-          const sk = allowed[Math.floor(r() * allowed.length)];
-          const idx = nextIndex(out[sk]);
-          out[sk][idx] = { time: timeStamp(r), zone: z };
-          targets[sk]--;
-        }
-
-        // complétion de sécurité si quota restant
-        Object.entries(targets).forEach(([sk, n]) => {
-          for (let i = 0; i < n; i++) {
-            const cat =
-              Object.keys(allowedSkillsByCategory).find((k) =>
-                allowedSkillsByCategory[k].includes(sk)
-              ) || "other";
-            const zc = zones.filter((zz) => zoneCategory(zz.zone) === cat);
-            const z = (zc.length ? zc : zones)[
-              Math.floor(r() * (zc.length ? zc.length : zones.length))
-            ].zone;
-            const idx = nextIndex(out[sk]);
-            out[sk][idx] = { time: timeStamp(r), zone: z };
-          }
-        });
-
-        return out;
       }
 
       // RNG déterministe — Mulberry32
@@ -241,7 +236,6 @@
           ms = Math.floor(r() * 99);
         return `${pad2(min)}min ${pad2(sec)}sec ${pad2(ms)}`;
       }
-      const pick = (arr, r) => arr[Math.floor(r() * arr.length)];
       const normalizePlayers = (raw) =>
         raw.map((p) => ({
           id: +p.ID,
@@ -250,7 +244,6 @@
           number: +p.NUMERO,
         }));
 
-      // Noms lisibles depuis le chemin fichier
       function teamNameFrom(file) {
         if (file.includes("ACBobigny")) return "AC Bobigny";
         if (file.includes("charonne")) return "Charonne";
@@ -259,7 +252,6 @@
         return "Team";
       }
 
-      /* ===== Chargement sources ===== */
       async function loadJSON(url) {
         const res = await fetch(url);
         if (!res.ok) throw new Error("Fetch " + url);
@@ -275,30 +267,47 @@
         return { divisions, sections, skills, zones };
       }
 
-      function zonesForSkill(skill, zones) {
-        if (skill === "freethrow")
-          return zones.filter((z) => z.zone === "freethrows");
-        if (skill === "shootwiderange")
-          return zones.filter(
-            (z) =>
-              z.zone.startsWith("threepoints") ||
-              z.zone === "three-points-arc" ||
-              z.zone === "freethrows"
-          );
-        if (skill === "shootmidrange")
-          return zones.filter((z) => z.zone.startsWith("mid-range"));
-        return zones; // autres : autoriser partout
-      }
+      function generatePlayerZoneFirst(p, skills, zones, r, maxPerSkill) {
+        const targets = {};
+        let total = 0;
+        skills.forEach((s) => {
+          const n = Math.floor(r() * (maxPerSkill + 1));
+          targets[s.skill] = n;
+          total += n;
+        });
+        const out = {
+          id: p.id,
+          firstname: p.firstname,
+          lastname: p.lastname,
+          number: p.number,
+          ...emptySkillBag(skills),
+        };
 
-      function buildSkillStat(skill, r, maxPerSkill, zones) {
-        const count = Math.floor(r() * (maxPerSkill + 1));
-        const obj = { count };
-        if (count > 0) {
-          for (let i = 1; i <= count; i++) {
-            obj[String(i)] = { time: timeStamp(r), zone: pick(zones, r).zone };
-          }
+        const skillsLeft = () => Object.values(targets).some((n) => n > 0);
+        let guard = 0;
+        while (skillsLeft() && guard++ < total * 6) {
+          const z = zones[Math.floor(r() * zones.length)].zone;
+          const candidates = Object.keys(targets).filter(
+            (sk) =>
+              targets[sk] > 0 && allowedZonesForSkill(sk, zones).includes(z)
+          );
+          if (!candidates.length) continue;
+          const sk = candidates[Math.floor(r() * candidates.length)];
+          const idx = nextIndex(out[sk]);
+          out[sk][idx] = { time: timeStamp(r), zone: z };
+          targets[sk]--;
         }
-        return obj;
+
+        Object.entries(targets).forEach(([sk, n]) => {
+          for (let i = 0; i < n; i++) {
+            const zlist = allowedZonesForSkill(sk, zones);
+            const z = zlist[Math.floor(r() * zlist.length)];
+            const idx = nextIndex(out[sk]);
+            out[sk][idx] = { time: timeStamp(r), zone: z };
+          }
+        });
+
+        return out;
       }
 
       function generateMatch({
@@ -333,15 +342,15 @@
                   number: p.number,
                 };
                 skills.forEach((s) => {
-                  const sk = s.skill,
-                    zlist = zonesForSkill(sk, zones);
+                  const sk = s.skill;
+                  const zlist = allowedZonesForSkill(sk, zones);
                   const count = Math.floor(r() * (maxPerSkill + 1));
                   const obj = { count: 0 };
                   for (let i = 0; i < count; i++) {
                     const idx = String(++obj.count);
                     obj[idx] = {
                       time: timeStamp(r),
-                      zone: zlist[Math.floor(r() * zlist.length)].zone,
+                      zone: zlist[Math.floor(r() * zlist.length)],
                     };
                   }
                   out[sk] = obj;
@@ -352,23 +361,20 @@
         return [meta, players];
       }
 
-      /* ===== UI ===== */
       (async function init() {
         const { divisions, sections, skills, zones } = await loadSources();
 
         const divSel = document.getElementById("division");
         divisions.forEach((d) => {
           const o = document.createElement("option");
-          o.value = d.division;
-          o.textContent = d.division;
+          o.value = o.textContent = d.division;
           divSel.appendChild(o);
         });
 
         const secSel = document.getElementById("section");
         sections.forEach((s) => {
           const o = document.createElement("option");
-          o.value = s;
-          o.textContent = s;
+          o.value = o.textContent = s;
           secSel.appendChild(o);
         });
 
