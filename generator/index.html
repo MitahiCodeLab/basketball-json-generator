@@ -135,71 +135,58 @@
     <pre id="output">Clique sur “Générer”…</pre>
 
     <script>
+      /* ===== Dictionnaires de zones ===== */
       const Z = {
         midClose: [
-          "mid-range-close-left-top",
-          "mid-range-close-left-middle",
-          "mid-range-close-left-bottom",
-          "mid-range-close-right-top",
-          "mid-range-close-right-middle",
-          "mid-range-close-right-bottom",
-          "mid-range-close-left-top-e",
-          "mid-range-close-left-middle-e",
-          "mid-range-close-left-bottom-e",
-          "mid-range-close-right-top-e",
-          "mid-range-close-right-middle-e",
-          "mid-range-close-right-bottom-e",
+          "mid-range-close-left-top","mid-range-close-left-middle","mid-range-close-left-bottom",
+          "mid-range-close-right-top","mid-range-close-right-middle","mid-range-close-right-bottom",
+          "mid-range-close-left-top-e","mid-range-close-left-middle-e","mid-range-close-left-bottom-e",
+          "mid-range-close-right-top-e","mid-range-close-right-middle-e","mid-range-close-right-bottom-e"
+        ],
+        // Sous-ensemble strict "dans la peinture" ≈ uniquement les variantes -e
+        midCloseE: [
+          "mid-range-close-left-top-e","mid-range-close-left-middle-e","mid-range-close-left-bottom-e",
+          "mid-range-close-right-top-e","mid-range-close-right-middle-e","mid-range-close-right-bottom-e"
         ],
         midWide: [
-          "mid-range-wide-left-bottom-arc",
-          "mid-range-wide-left-top",
-          "mid-range-wide-left-middle",
-          "mid-range-wide-right-bottom-arc",
-          "mid-range-wide-right-top",
-          "mid-range-wide-right-middle",
-          "mid-range-wide-left-bottom-arc-e",
-          "mid-range-wide-left-top-e",
-          "mid-range-wide-left-middle-e",
-          "mid-range-wide-right-bottom-arc-e",
-          "mid-range-wide-right-top-e",
-          "mid-range-wide-right-middle-e",
+          "mid-range-wide-left-bottom-arc","mid-range-wide-left-top","mid-range-wide-left-middle",
+          "mid-range-wide-right-bottom-arc","mid-range-wide-right-top","mid-range-wide-right-middle",
+          "mid-range-wide-left-bottom-arc-e","mid-range-wide-left-top-e","mid-range-wide-left-middle-e",
+          "mid-range-wide-right-bottom-arc-e","mid-range-wide-right-top-e","mid-range-wide-right-middle-e"
         ],
         three: [
           "three-points-arc",
-          "threepoints-range-north-west",
-          "threepoints-range-north-east",
-          "threepoints-range-south-west",
-          "threepoints-range-south-east",
-          "threepoints-range-middle-north",
-          "threepoints-range-middle-south",
-          "threepoints-range-middle",
-          "threepoints-range-north-west-e",
-          "threepoints-range-north-east-e",
-          "threepoints-range-south-west-e",
-          "threepoints-range-south-east-e",
-          "threepoints-range-middle-north-e",
-          "threepoints-range-middle-south-e",
-          "threepoints-range-middle-e",
+          "threepoints-range-north-west","threepoints-range-north-east",
+          "threepoints-range-south-west","threepoints-range-south-east",
+          "threepoints-range-middle-north","threepoints-range-middle-south","threepoints-range-middle",
+          "threepoints-range-north-west-e","threepoints-range-north-east-e",
+          "threepoints-range-south-west-e","threepoints-range-south-east-e",
+          "threepoints-range-middle-north-e","threepoints-range-middle-south-e","threepoints-range-middle-e"
         ],
-        ft: ["freethrows"],
+        ft: ["freethrows"]
       };
 
+      /* ===== Mapping skill → zones autorisées (STRICT) ===== */
       const allowedZonesBySkill = {
-        freethrow: [...Z.ft],
+        // tirs
+        freethrow:      [...Z.ft],
         shootwiderange: [...Z.three],
-        shootmidrange: [...Z.midClose, ...Z.midWide],
+        shootmidrange:  [...Z.midClose, ...Z.midWide],
 
-        layup: [...Z.midClose, ...Z.ft],
-        dunk: [...Z.midClose, ...Z.ft],
-        teardrop: [...Z.midClose, ...Z.ft],
-        tipin: [...Z.midClose, ...Z.ft],
+        // près du cercle (UNIQUEMENT variantes -e) — pas de freethrows
+        layup:    [...Z.midCloseE],
+        dunk:     [...Z.midCloseE],
+        teardrop: [...Z.midCloseE],
+        tipin:    [...Z.midCloseE],
 
+        // rebonds / contre : 2 points (mid-range uniquement)
         offrebound: [...Z.midClose, ...Z.midWide],
         defrebound: [...Z.midClose, ...Z.midWide],
-        block: [...Z.midClose, ...Z.midWide],
+        block:      [...Z.midClose, ...Z.midWide],
 
-        steal: [...Z.ft, ...Z.midClose, ...Z.midWide, ...Z.three],
-        assist: [...Z.ft, ...Z.midClose, ...Z.midWide, ...Z.three],
+        // actions globales : ft + mid + three
+        steal:   [...Z.ft, ...Z.midClose, ...Z.midWide, ...Z.three],
+        assist:  [...Z.ft, ...Z.midClose, ...Z.midWide, ...Z.three],
         duelwon: [...Z.ft, ...Z.midClose, ...Z.midWide, ...Z.three],
       };
 
@@ -219,6 +206,76 @@
           );
         }
         return list;
+      }
+
+      /* ===== Mini-checker console ===== */
+      function checkMappingCompliance(output) {
+        console.log('🔍 [checker] Vérification du mapping skill → zones...');
+
+        const violations = [];
+        const stats = {};
+
+        // Parcours du/des match(s)
+        const matches = Array.isArray(output[0]) ? output : [output];
+
+        matches.forEach((match, matchIdx) => {
+          const [meta, players] = match;
+          console.log(`[checker] Match ${matchIdx + 1}: ${meta.game.host} vs ${meta.game.opponent}`);
+
+          players.forEach((player, playerIdx) => {
+            Object.keys(allowedZonesBySkill).forEach(skill => {
+              const skillData = player[skill];
+              if (!skillData) return;
+
+              const count = skillData.count || 0;
+              if (!stats[skill]) stats[skill] = { totalEvents: 0, zones: new Set() };
+              stats[skill].totalEvents += count;
+
+              // Vérification des événements
+              for (let i = 1; i <= count; i++) {
+                const event = skillData[String(i)];
+                if (!event) continue;
+
+                const zone = event.zone;
+                stats[skill].zones.add(zone);
+
+                const allowedZones = allowedZonesBySkill[skill];
+                if (!allowedZones.includes(zone)) {
+                  violations.push({
+                    match: matchIdx + 1,
+                    player: `${player.firstname} ${player.lastname} (#${player.number})`,
+                    skill,
+                    zone,
+                    time: event.time
+                  });
+                }
+              }
+            });
+          });
+        });
+
+        // Affichage des statistiques
+        console.log('📊 [checker] Statistiques par skill:');
+        console.table(Object.fromEntries(
+          Object.entries(stats).map(([skill, data]) => [
+            skill,
+            {
+              events: data.totalEvents,
+              zones_distinctes: data.zones.size,
+              zones_utilisées: Array.from(data.zones).sort().join(', ') || 'aucune'
+            }
+          ])
+        ));
+
+        // Affichage des violations
+        if (violations.length === 0) {
+          console.log('✅ [checker] Aucune violation détectée - mapping respecté !');
+        } else {
+          console.error(`❌ [checker] ${violations.length} violation(s) détectée(s):`);
+          console.table(violations);
+        }
+
+        return { violations, stats };
       }
 
       /* ===== Helpers ===== */
@@ -320,21 +377,16 @@
           targets[sk]--;
         }
 
+        // Complétion (si quotas restants et aucune zone autorisée) : ne rien ajouter (count reste 0)
         Object.entries(targets).forEach(([sk, n]) => {
           if (n <= 0) return;
           const zlist = [...allowedSetBySkill[sk]];
           if (zlist.length === 0) {
-            console.warn(
-              "[mapping] pas de zones autorisées pour",
-              sk,
-              "→ events ignorés (count resté à",
-              n,
-              ")"
-            );
+            console.warn('[mapping] pas de zones autorisées pour', sk, '→ quotas restants ignorés');
             return;
           }
           for (let i = 0; i < n; i++) {
-            const z = zlist[Math.floor(r() * zlist.length)];
+            const z = zlist[Math.floor(r()*zlist.length)];
             const idx = nextIndex(out[sk]);
             out[sk][idx] = { time: timeStamp(r), zone: z };
           }
@@ -374,24 +426,20 @@
                   firstname: p.firstname,
                   lastname: p.lastname,
                   number: p.number,
+                  ...emptySkillBag(skills),
                 };
                 skills.forEach((s) => {
                   const sk = s.skill;
-                  const zlist = allowedZonesForSkill(sk, zones); // mapping strict
+                  const zlist = allowedZonesForSkill(sk, zones);
                   const count = Math.floor(r() * (maxPerSkill + 1));
                   const obj = { count: 0 };
 
-                  if (zlist.length === 0) {
-                    out[sk] = obj;
-                    return;
-                  }
+                  // Si aucune zone autorisée → 0 event (respect strict du mapping)
+                  if (zlist.length === 0) { out[sk] = obj; return; }
 
                   for (let i = 0; i < count; i++) {
                     const idx = String(++obj.count);
-                    obj[idx] = {
-                      time: timeStamp(r),
-                      zone: zlist[Math.floor(r() * zlist.length)],
-                    };
+                    obj[idx] = { time: timeStamp(r), zone: zlist[Math.floor(r()*zlist.length)] };
                   }
                   out[sk] = obj;
                 });
@@ -475,6 +523,9 @@
               2
             );
             document.getElementById("output").textContent = pretty;
+
+            // Vérification automatique du mapping
+            checkMappingCompliance(out.length === 1 ? out[0] : out);
 
             const btn = document.getElementById("downloadBtn");
             btn.disabled = false;
