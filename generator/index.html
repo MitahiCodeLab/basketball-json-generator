@@ -143,11 +143,6 @@
           "mid-range-close-left-top-e","mid-range-close-left-middle-e","mid-range-close-left-bottom-e",
           "mid-range-close-right-top-e","mid-range-close-right-middle-e","mid-range-close-right-bottom-e"
         ],
-        // Sous-ensemble strict "dans la peinture" ≈ uniquement les variantes -e
-        midCloseE: [
-          "mid-range-close-left-top-e","mid-range-close-left-middle-e","mid-range-close-left-bottom-e",
-          "mid-range-close-right-top-e","mid-range-close-right-middle-e","mid-range-close-right-bottom-e"
-        ],
         midWide: [
           "mid-range-wide-left-bottom-arc","mid-range-wide-left-top","mid-range-wide-left-middle",
           "mid-range-wide-right-bottom-arc","mid-range-wide-right-top","mid-range-wide-right-middle",
@@ -163,31 +158,63 @@
           "threepoints-range-south-west-e","threepoints-range-south-east-e",
           "threepoints-range-middle-north-e","threepoints-range-middle-south-e","threepoints-range-middle-e"
         ],
-        ft: ["freethrows"]
+        ft: ["freethrows"],
+        // "paint" = zone de peinture (zones proches du panier)
+        paint: [
+          "mid-range-close-left-top-e","mid-range-close-left-middle-e","mid-range-close-left-bottom-e",
+          "mid-range-close-right-top-e","mid-range-close-right-middle-e","mid-range-close-right-bottom-e"
+        ],
+        allZones: [
+          "freethrows", "three-points-arc",
+          "mid-range-close-left-top","mid-range-close-left-middle","mid-range-close-left-bottom",
+          "mid-range-wide-left-bottom-arc","mid-range-wide-left-top","mid-range-wide-left-middle",
+          "mid-range-close-right-top","mid-range-close-right-middle","mid-range-close-right-bottom",
+          "mid-range-wide-right-bottom-arc","mid-range-wide-right-top","mid-range-wide-right-middle",
+          "threepoints-range-north-west","threepoints-range-north-east",
+          "threepoints-range-south-west","threepoints-range-south-east",
+          "threepoints-range-middle-north","threepoints-range-middle-south","threepoints-range-middle",
+          "mid-range-close-left-top-e","mid-range-close-left-middle-e","mid-range-close-left-bottom-e",
+          "mid-range-wide-left-bottom-arc-e","mid-range-wide-left-top-e","mid-range-wide-left-middle-e",
+          "mid-range-close-right-top-e","mid-range-close-right-middle-e","mid-range-close-right-bottom-e",
+          "mid-range-wide-right-bottom-arc-e","mid-range-wide-right-top-e","mid-range-wide-right-middle-e",
+          "threepoints-range-north-west-e","threepoints-range-north-east-e",
+          "threepoints-range-south-west-e","threepoints-range-south-east-e",
+          "threepoints-range-middle-north-e","threepoints-range-middle-south-e","threepoints-range-middle-e"
+        ]
       };
 
-      /* ===== Mapping skill → zones autorisées (STRICT) ===== */
+      /* ===== Mapping skill → zones autorisées (selon skills-zones.txt) ===== */
       const allowedZonesBySkill = {
-        // tirs
-        freethrow:      [...Z.ft],
-        shootwiderange: [...Z.three],
-        shootmidrange:  [...Z.midClose, ...Z.midWide],
+        // Mapping exact selon le fichier skills-zones.txt
+        shootmidrange: [
+          "mid-range-close-left-top","mid-range-close-left-middle","mid-range-close-left-bottom",
+          "mid-range-wide-left-bottom-arc","mid-range-wide-left-top","mid-range-wide-left-middle",
+          "mid-range-close-right-top","mid-range-close-right-middle","mid-range-close-right-bottom",
+          "mid-range-wide-right-bottom-arc","mid-range-wide-right-top","mid-range-wide-right-middle"
+        ],
 
-        // près du cercle (UNIQUEMENT variantes -e) — pas de freethrows
-        layup:    [...Z.midCloseE],
-        dunk:     [...Z.midCloseE],
-        teardrop: [...Z.midCloseE],
-        tipin:    [...Z.midCloseE],
+        shootwiderange: [
+          "three-points-arc",
+          "threepoints-range-north-west","threepoints-range-north-east",
+          "threepoints-range-south-west","threepoints-range-south-east",
+          "threepoints-range-middle-north","threepoints-range-middle-south","threepoints-range-middle"
+        ],
 
-        // rebonds / contre : 2 points (mid-range uniquement)
-        offrebound: [...Z.midClose, ...Z.midWide],
-        defrebound: [...Z.midClose, ...Z.midWide],
-        block:      [...Z.midClose, ...Z.midWide],
+        freethrow: ["freethrows"],
 
-        // actions globales : ft + mid + three
-        steal:   [...Z.ft, ...Z.midClose, ...Z.midWide, ...Z.three],
-        assist:  [...Z.ft, ...Z.midClose, ...Z.midWide, ...Z.three],
-        duelwon: [...Z.ft, ...Z.midClose, ...Z.midWide, ...Z.three],
+        // Actions dans le "paint" = zones de peinture selon skills-zones.txt
+        layup: [...Z.paint],
+        dunk: [...Z.paint],
+        teardrop: [...Z.paint],
+        tipin: [...Z.paint],
+        offrebound: [...Z.paint],
+        defrebound: [...Z.paint],
+        block: [...Z.paint],
+
+        // Actions globales : paint + freethrows + toutes les zones selon skills-zones.txt
+        steal: [...Z.paint, ...Z.ft, ...Z.midClose, ...Z.midWide, ...Z.three],
+        assist: [...Z.paint, ...Z.ft, ...Z.midClose, ...Z.midWide, ...Z.three],
+        duelwon: [...Z.paint, ...Z.ft, ...Z.midClose, ...Z.midWide, ...Z.three],
       };
 
       function allowedZonesForSkill(skill, zones) {
