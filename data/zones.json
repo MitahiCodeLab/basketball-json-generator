@@ -158,5 +158,9 @@
   {
     "ID": "40",
     "zone": "threepoints-range-middle-e"
+  },
+  {
+    "ID": "41",
+    "zone": "paint"
   }
 ]

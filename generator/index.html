@@ -441,9 +441,13 @@
         };
 
         const zoneFirst = document.getElementById("zoneFirst")?.checked;
-        const players = hostPlayers.map((p) =>
-          zoneFirst
-            ? generatePlayerZoneFirst(p, skills, zones, r, maxPerSkill)
+        const players = hostPlayers.map((p, playerIndex) => {
+          // Créer un seed unique pour chaque joueur
+          const playerSeed = seed + playerIndex * 1000 + p.id;
+          const playerRng = rng(playerSeed);
+
+          return zoneFirst
+            ? generatePlayerZoneFirst(p, skills, zones, playerRng, maxPerSkill)
             : (function playerSkillFirst() {
                 const out = {
                   id: p.id,
@@ -455,7 +459,7 @@
                 skills.forEach((s) => {
                   const sk = s.skill;
                   const zlist = allowedZonesForSkill(sk, zones);
-                  const count = Math.floor(r() * (maxPerSkill + 1));
+                  const count = Math.floor(playerRng() * (maxPerSkill + 1));
                   const obj = { count: 0 };
 
                   // Si aucune zone autorisée → 0 event (respect strict du mapping)
@@ -463,13 +467,13 @@
 
                   for (let i = 0; i < count; i++) {
                     const idx = String(++obj.count);
-                    obj[idx] = { time: timeStamp(r), zone: zlist[Math.floor(r()*zlist.length)] };
+                    obj[idx] = { time: timeStamp(playerRng), zone: zlist[Math.floor(playerRng()*zlist.length)] };
                   }
                   out[sk] = obj;
                 });
                 return out;
               })()
-        );
+        });
 
         return [meta, players];
       }
